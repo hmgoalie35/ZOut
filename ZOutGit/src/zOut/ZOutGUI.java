@@ -91,7 +91,12 @@ public class ZOutGUI {
 	private Properties properties;
 	
 	/*
-	 * documentation for progress bar and stuff needed
+	 * We implement a progress bar so the user can visually see the progress of the calculation that takes
+	 * place when they hit the calculate total button.
+	 * The timer is used to update the progress of the progressbar.
+	 * When the calculate total button is pressed the progress bar displays computing... and then Done when 
+	 * the process is done. Also note that after a calculation, whenever the user goes to enter a new value into
+	 * one of the text entries, the progress bar is reset to 0.
 	 */
 	private JProgressBar progressBar;
 	private Timer timer;
