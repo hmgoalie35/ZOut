@@ -1,0 +1,4 @@
+Add jdialog that pops up if there is data in the credit card or check entries, (preventing the chance user didnt realize 
+they have to hit enter to add a credit card or check)
+
+Warning: credit card / checks have not been added yet, do you still want to proceed?

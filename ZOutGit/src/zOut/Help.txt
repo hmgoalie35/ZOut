@@ -1,0 +1,163 @@
+© Harris Pittinsky
+
+~~Z-Out Program~~
+
+Coded on - Lenovo T520, Windows 7 64 bit, Eclipse Kepler Java 1.7
+
+~~Any bugs, inquiries or suggestions can be emailed to harris@pittinsky.com
+
+The source code is included in the .jar. Just open the .jar with an unarchiver. Go to the zOut folder
+and the source code is the files ending with .java
+
+The javadocs can be viewed by navigating to the JavaDocs folder when the .jar is unzipped and double 
+clicking index.html. From here documentation about the code can be accessed by selecting
+the appropriate class.
+
+~~ When actually doing the z-out, turn the key to the z and hit the cash out button (bottom right). 
+~~ Count the number of each bills/coins and enter them into this program. 
+~~ You still have to fill out the sheet with the corresponding amount of bills/coins and how many 
+adult residents, skate rentals, etc. there were for the day
+~~ Also need to put the money in an envelop, with the date, time, your name, total money amount 
+on the outside.
+
+~~ The program also handles checks and credit cards, enter the check amount in the entry box and 
+hit the <Enter> key , this will add up all of the checks and then display the total.
+
+~~ The same method will be used for credit card transactions. Simply type the credit card amount 
+in the entry box and hit the <Enter> key. 
+
+~~ The program also displays how many credit cards and checks have been added in the rightmost column.
+ This is a running total and as checks or credit cards are added they are added. whenever the user
+  deletes a credit card or check this number decreases by one. 
+
+====================================================================================
+
+Brief Overview --
+
+This is a simple and easy to use program that allows the user to enter the  
+Amount of bills they have counted and the program will perform the rest of the
+math for them. 
+
+When the program starts it automatically creates a folder named History. A file called History.zof 
+(.zof for Z-Out File) is created in this folder. This file is appended to whenever the user presses 
+the Calculate Total button and the resulting total is positive. if the resulting total is negative, 
+upon confirmation from the user, the data is written to the file, otherwise no data is written to the file. 
+
+Whenever the program is launched it checks to see if the directory or file already exists so it does not
+overwrite them. 
+
+The data in the file is of the form:
+
+Date
+
+Number of Checks: 0
+Check Sub-Total: $0.00
+
+Number of Credit Cards: 0
+Credit Sub-Total: $0.00
+
+Cash Sub-Total: $0.00
+
+Register Starting Amount: $100.00
+Sub-Total: $0.00
+Total: $0.00
+------------------------------------
+
+
+In addition there is a properties.txt file that is created the first time the program starts. This file 
+stores the default register starting amount. Initially it is $100 but if the user changes the amount
+then the file is updated and whenever the program is loaded, the new amount is loaded into the
+"Register Amount" entry.
+====================================================================================
+
+~~The conversions are done "live" this means that once data is entered, the  
+program automatically converts whatever the number may be to its specific  
+individual total. ex: when the number 5 is type into the $1 entry, the total under the "Amount" label is
+automatically updated to $5.00. If an invalid key is pressed (ex: 'h' or ~ or *) the program displays 
+a dialog telling the user an invalid key has been pressed. it then clears the entry so the user can 
+reenter any data. 
+
+====================================================================================
+
+**NOTE**
+~The register starting amount is the amount of cash that the register started  
+with at the beginning of the work day. Typically this value is not to be changed  
+unless for some reason an amount other than 100 was in the register to begin  
+with. 
+
+To change this value, click the modify button, enter the new value and hit ok, among confirmation 
+the value is changed. if the user opts to not change the amount, then the amount is set to the 
+previous value that was in the Register Amount entry.
+All entries/ buttons except the File menu are disabled until the ok button is pressed.
+When this amount is changed the properties.txt file is updated so that whenever
+the program is restarted, or launched again, it remembers the last starting
+amount the user wanted.  
+
+====================================================================================
+
+
+~~ The user can simply type in numbers that are valid in the entry boxes and the  
+conversions are done live. The corresponding totals are updated on the right  
+under the Amount label. 
+
+~~ A subtotal is automatically accumulated when the user enters, or  
+deletes numbers. 
+
+***** If there are none of a certain bill/coin you DO NOT need to put a 0 in 
+                      the entry box, just leave it blank****
+
+====================================================================================
+
+
+~~the calculate the total button is always enabled. the user can press it at any time
+if for some reason the calculation returns a negative number the program displays a dialog 
+to the user asking them if they are sure they entered the correct data, if yes then the total 
+is updated and the corresponding information is written to the History.zof file.
+if no then the program returns back to it's main screen so the user can input the correct 
+data. No information is written to the History.zof file in this case.  
+
+====================================================================================
+~~Reset Fields button -- this button resets all of the fields, including the credit cards 
+and checks that have been added.
+====================================================================================
+
+**File Menu**
+
+~~Restart -- allows the user to restart the program among confirmation if they want. this resets 
+all fields. keyboard shortcut - Ctrl + r
+
+~~Help -- opens this file
+
+~~Quit -- closes the program among confirmation. keyboard shortcut - Ctrl + q
+
+**Edit Menu**
+
+the below menu items are disabled until a check or credit card is added. 
+they are also disabled when all checks or credit cards have been removed
+
+~~Delete a Credit Card -- allows the user to remove any of the credit card values they added. 
+they simply input one of the values in the dialog box and if it exists, it is then removed and the
+ corresponding fields are updated. the current list of credit card values that have been added are 
+ displayed in the dialog box. 
+
+~~Delete a Check -- allows the user to remove any of the check values they added. they simply 
+input one of the values in the dialog box and if it exists, it is then removed and the
+corresponding fields are updated. the current list of check values that have been added
+are displayed in the dialog box
+
+
+**Transaction History**
+
+~~View Transaction History -- displays the transactions that have occurred and that are 
+stored in the History.zof file. keyboard shortcut - Ctrl + t.
+	-  contains a menu bar with a search option which opens up a search dialog so the
+	   user can search for any data. 
+	
+~~Delete Transaction History -- this resets the History.zof file to have nothing in 
+it among confirmation from the user. Actually deleting the file would cause 
+errors when the program is running, so creating a new clean file of the same name does 
+the same trick. 
+
+
+**The program window is purposely prevented from maximizing***
+
