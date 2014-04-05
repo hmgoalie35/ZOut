@@ -1274,9 +1274,8 @@ public class ZOutGUI {
 				SimpleDateFormat dateFormat = new SimpleDateFormat(
 						"EEEE MM-dd-yyyy hh:mm:ssa");
 				String date = dateFormat.format(cal.getTime());
-				out.println(date+ "\n"+ "\n"+ "Number of Checks: "+ checkList.size()+ "\n"+ "Check Sub-Total: "+ moneyFormat.format(checkVar)+ "\n"+ "\n"+ "Number of Credit Cards: "+ creditCardList.size()+ "\n"	+ "Credit Sub-Total: "+ moneyFormat.format(creditVar)+ "\n"	+ "\n"+ "Cash Sub-Total: "+ 
-				moneyFormat.format(dollarVar + twoVar + fiveVar+ tenVar + twentyVar + fiftyVar + hundredVar	+ pennyVar + nickelVar + dimeVar + quarterVar)	+ "\n" + "\n" + "Register Starting Amount: " + moneyFormat.format(Double.parseDouble(modifyEntry.getText())) +"\n" + "Sub-Total: " + subVar.getText() + "\n"
-							+ "Total: " + totalVar.getText() + "\n" + "------------------------------------");
+				Transaction transaction = new Transaction(date, checkList.size(), moneyFormat.format(checkVar), creditCardList.size(), moneyFormat.format(creditVar), moneyFormat.format(dollarVar + twoVar + fiveVar+ tenVar + twentyVar + fiftyVar + hundredVar	+ pennyVar + nickelVar + dimeVar + quarterVar), moneyFormat.format(Double.parseDouble(modifyEntry.getText())), subVar.getText(), totalVar.getText());			
+				out.println(transaction);
 				out.flush();
 			} else {
 				int i = JOptionPane.showConfirmDialog(mainWindow,"Resulting Calculation is Negative \n Are You Sure This is Correct?", "Negative Result",JOptionPane.YES_NO_OPTION);
@@ -1290,9 +1289,8 @@ public class ZOutGUI {
 					GregorianCalendar cal = new GregorianCalendar();
 					SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE MM-dd-yyyy hh:mm:ssa");
 					String date = dateFormat.format(cal.getTime());
-					out.println(date+ "\n"+ "\n"+ "Number of Checks: "+ checkList.size()+ "\n"+ "Check Sub-Total: "+ moneyFormat.format(checkVar)+ "\n"+ "\n"+ "Number of Credit Cards: "+ creditCardList.size()+ "\n"	+ "Credit Sub-Total: "+ moneyFormat.format(creditVar)+ "\n"	+ "\n"+ "Cash Sub-Total: "+ 
-							moneyFormat.format(dollarVar + twoVar + fiveVar+ tenVar + twentyVar + fiftyVar + hundredVar	+ pennyVar + nickelVar + dimeVar + quarterVar)	+ "\n" + "\n" + "Register Starting Amount: " + moneyFormat.format(Double.parseDouble(modifyEntry.getText())) +"\n" + "Sub-Total: " + subVar.getText() + "\n"
-										+ "Total: " + totalVar.getText() + "\n" + "------------------------------------");
+					Transaction transaction = new Transaction(date, checkList.size(), moneyFormat.format(checkVar), creditCardList.size(), moneyFormat.format(creditVar), moneyFormat.format(dollarVar + twoVar + fiveVar+ tenVar + twentyVar + fiftyVar + hundredVar	+ pennyVar + nickelVar + dimeVar + quarterVar), moneyFormat.format(Double.parseDouble(modifyEntry.getText())), subVar.getText(), totalVar.getText());			
+					out.println(transaction);
 					out.flush();
 				}else if (i == JOptionPane.NO_OPTION){
 					totalVar.setText(moneyFormat.format(0));
