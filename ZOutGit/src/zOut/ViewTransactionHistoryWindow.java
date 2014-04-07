@@ -9,11 +9,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Scanner;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -32,6 +28,7 @@ import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.Document;
 import javax.swing.text.Highlighter;
 import javax.swing.text.JTextComponent;
+
 /**
  * Creates the window where the transaction history is displayed.
  * @author Harris
@@ -41,7 +38,6 @@ public class ViewTransactionHistoryWindow {
 	private static boolean isFrameCreated, isSearchCreated;
 	private JTextArea textArea;
 	private JScrollPane scrollPane;
-	private Scanner in;
 	private JMenuBar menuBar;
 	private JMenu searchMenu;
 	private JMenuItem searchMenuItem;
@@ -58,6 +54,7 @@ public class ViewTransactionHistoryWindow {
 	 * done in case the user presses the view transaction history window a few times in a row. 
 	 */
 	public ViewTransactionHistoryWindow(){
+		StringBuilder bldr = new StringBuilder();
 		if(isFrameCreated){
 			frame.dispose();
 			isFrameCreated = false;
@@ -74,20 +71,9 @@ public class ViewTransactionHistoryWindow {
 		textArea = new JTextArea();
 		textArea.setEditable(false);
 		
-		StringBuilder bldr = new StringBuilder();
-		try {
-			File history = new File(ZOutGUI.getPath() + "/History.zof");
-			in = new Scanner(history);
-			while (in.hasNextLine()) {
-				bldr.append(in.nextLine() + "\n");
-			}
-			in.close();
-		}catch(NullPointerException ex){
-			JOptionPane.showMessageDialog(frame, "Can't Locate History.zof Make Sure It Is In \nthe History FolderOr Delete the Folder\n and Restart The Program", "Can't Located History.zof", JOptionPane.ERROR_MESSAGE);	
-		}catch (FileNotFoundException e) {
-			JOptionPane.showMessageDialog(frame,"Cannot Locate History.zof", "Cannot Locate History.zof", JOptionPane.ERROR_MESSAGE);
+		for (Transaction data : ZOutGUI.getTransactionList()) {
+			bldr.append(data.toString()+ "\n");
 		}
-		in.close();
 		if (bldr.length() == 0) {
 			textArea.setText("No Transactions Yet");
 			textArea.setCaretPosition(0);
