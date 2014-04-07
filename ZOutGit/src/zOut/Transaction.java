@@ -22,6 +22,22 @@ public class Transaction implements Serializable {
 		this.subTotal = aSubTotal;
 		this.total = theTotal;
 	}
+	
+	/**
+	 * Accessor for the date this transaction was create
+	 * @return the date of the transaction
+	 */
+	public String getDate(){
+		return date;
+	}
+	
+	/**
+	 * Accessor for the total of this transaction
+	 * @return the total of the transaction
+	 */
+	public String getTotal(){
+		return total;
+	}
 @Override
 public String toString() {
 	String str = date + "\n" + "\n" + "Number of Checks: " + numChecks
