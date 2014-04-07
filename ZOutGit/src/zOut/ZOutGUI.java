@@ -20,7 +20,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -89,7 +88,6 @@ public class ZOutGUI {
 			checkVar = 0, moneyAmount = 0;
 
 	private String modifyData;
-	private PrintWriter out;
 	private static String path;
 	private File file, dir;
 	private Properties properties;
@@ -128,16 +126,13 @@ public class ZOutGUI {
 				dir.mkdir();
 				file.createNewFile();
 				propertyFile.createNewFile();
-				//out = new PrintWriter(new FileWriter(file));
 			}else if(!file.exists()) {
 				file.createNewFile();
-				//out = new PrintWriter(new FileWriter(file));
 			}else if(!propertyFile.exists()){
 				propertyFile.createNewFile();
 			}
 			path = dir.getPath();	
 			file.createNewFile();
-			//out = new PrintWriter(new FileWriter(file, true));
 		} catch (FileNotFoundException arg) {
 			JOptionPane.showMessageDialog(mainWindow, "History file not created, please delete the History folder and restart the program", "Error",JOptionPane.ERROR_MESSAGE);
 		} catch (IOException e1) {
@@ -1330,8 +1325,6 @@ public class ZOutGUI {
 				transactionList.add(transaction);
 				deleteTransactionMenuItem.setEnabled(true);
 				save();
-				//out.println(transaction);
-				//out.flush();
 			} else {
 				int i = JOptionPane.showConfirmDialog(mainWindow,"Resulting Calculation is Negative \n Are You Sure This is Correct?", "Negative Result",JOptionPane.YES_NO_OPTION);
 				if (i == JOptionPane.YES_OPTION) {
@@ -1348,8 +1341,6 @@ public class ZOutGUI {
 					transactionList.add(transaction);
 					deleteTransactionMenuItem.setEnabled(true);
 					save();
-					//out.println(transaction);
-					//out.flush();
 				}else if (i == JOptionPane.NO_OPTION){
 					totalVar.setText(moneyFormat.format(0));
 				}
