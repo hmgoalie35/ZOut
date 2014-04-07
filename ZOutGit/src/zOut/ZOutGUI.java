@@ -65,7 +65,7 @@ public class ZOutGUI {
 	private JMenuBar menuBar;
 	private JMenu fileMenu, editMenu, viewMenu;
 	private JMenuItem restartMenuItem, viewHistoryMenuItem, helpMenuItem,
-			deleteHistoryMenuItem, quitMenuItem, deleteCreditMenuItem, deleteCheckMenuItem;
+			deleteHistoryMenuItem, quitMenuItem, deleteCreditMenuItem, deleteCheckMenuItem, deleteTransactionMenuItem;
 	private JTextField oneEntry, twoEntry, fiveEntry, tenEntry, twentyEntry,
 			fiftyEntry, hundredEntry, creditEntry, checkEntry, pennyEntry, 
 			nickelEntry, dimeEntry, quarterEntry, modifyEntry;
@@ -93,11 +93,10 @@ public class ZOutGUI {
 	private Properties properties;
 	
 	/*
-	 * documentation for progress bar and stuff needed
+	 * We implement a progress bar so the user can more easily see that the calculation has occurred.
 	 */
 	private JProgressBar progressBar;
 	private Timer timer;
-	private JMenuItem deleteTransactionMenuItem;
 	/**
 	 * Constructor that sets up the necessary folder if it does not already exist as well as the History.zof file if it does not exist. 
 	 * Sets up necessary components. 
@@ -154,8 +153,9 @@ public class ZOutGUI {
 		}catch(IOException ex){
 			JOptionPane.showMessageDialog(mainWindow, "Cannot locate properties.txt File, please restart the program", "Error locating properties.txt", JOptionPane.ERROR_MESSAGE);
 		}
-					
+		/*Call this function that populates the transactionList with data from the history.zof file*/		
 		onStartup();
+		
 		checkList = new ArrayList<Double>();
 		creditCardList = new ArrayList<Double>();
 
@@ -543,9 +543,18 @@ public class ZOutGUI {
 		new ZOutGUI();
 	}
 	
+	/**
+	 * Allows the others classes in this package to access the transactionList.
+	 * This is so the other classes can read what objects are in the transactionList.
+	 * @return transactionList
+	 */
 	static ArrayList<Transaction> getTransactionList(){
 		return transactionList;
 	}
+	
+	/**
+	 * Invoked whenever the program starts. Reads any data from the History.zof file and adds it to the transactionList.
+	 */
 	public void onStartup(){
 		boolean done = false;
 		transactionList.clear();
@@ -567,6 +576,14 @@ public class ZOutGUI {
 			JOptionPane.showMessageDialog(mainWindow, "Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 		}
 	}
+	
+	/**
+	 * Called whenever a new Transaction object is created. Called in the CalculateBtnActionListener class. 
+	 * Saves all of the objects in the transactionList to the file, overwriting anything that was previously in 
+	 * the file. This is ok though because we just write the data that is in the transactionList, which contains
+	 * the data that was previously in the file (on startup the transactionList is populated with any data that
+	 * was in the file)
+	 */
 	public void save(){
 		try {
 		    FileOutputStream fos = new FileOutputStream(file);
@@ -1303,6 +1320,7 @@ public class ZOutGUI {
 	 * that the resulting negative calculation is correct, and if it is, then the same process as if the total was >= 0 is performed, 
 	 * writing to file, etc. if the user realizes they messed up and don't confirm then they are brought back to the gui
 	 * where they can edit their inputs.
+	 * At this point we know there are transactions in the transaction list so we enable the delete a transaction button
 	 * @author Harris Pittinsky
 	 */
 	private class CalculateBtnActionListener implements ActionListener {
@@ -1361,7 +1379,6 @@ public class ZOutGUI {
 	 */
 	private class ViewHistoryMenuItemActionListener implements ActionListener {
 		public void actionPerformed(ActionEvent arg0) {
-			
 			new ViewTransactionHistoryWindow();
 		}
 	}
@@ -1394,7 +1411,7 @@ public class ZOutGUI {
 	/**
 	 * Closes all open windows if they are open. uses the static closeTransHistoryWindow of the ViewTransactionHistoryWindow class
 	 * see documentation in the ViewTransactionHistoryWindow class file. 
-	 * if the helpFrame is open it is closed also.
+	 * if the helpFrame is open it is closed also and same with the DeleteTransactionWindow
 	 */
 	private void closeAllWindows() {
 		try {
@@ -1490,8 +1507,7 @@ public class ZOutGUI {
 	 * ActionListener for when the delete transaction history menu item in the Transaction History menu is pressed.
 	 * after two confirmations by the user the transaction history file is cleared of all data it contained. note that
 	 * the file itself is not actually deleted, all of the data in the file is removed so a new clean file is present.
-	 * the view transaction his
-	 * tory window is also closed when this occurs if it was opened.
+	 * the view transaction history window is also closed when this occurs if it was opened.
 	 * @author Harris Pittinsky
 	 */
 	private class DeleteHistoryMenuItemActionListener implements ActionListener {
@@ -1517,7 +1533,6 @@ public class ZOutGUI {
 									JOptionPane.showMessageDialog(mainWindow,"         History.zof Reset Failed","Reset Unsuccessful",JOptionPane.ERROR_MESSAGE);
 								}
 							} catch (InterruptedException e1) {
-								// TODO Auto-generated catch block
 								JOptionPane.showMessageDialog(mainWindow,"Error: " + e1.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
 
 							}												
@@ -1680,6 +1695,11 @@ public class ZOutGUI {
 		}
 	}
 	
+	/**
+	 * Timer listener used to update the progress bar every how ever many seconds specified.
+	 * @author Harris
+	 *
+	 */
 	private class TimerListener implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
@@ -1690,6 +1710,12 @@ public class ZOutGUI {
 			progressBar.setValue(progressBar.getValue() + 1);				
 		}		
 	}
+	/**
+	 * ActionListener that creates new DeleteTransactionWindow whenever the "Delete a Transaction" menu item is pressed
+	 * see further documentation in the DeleteTransactionWindow class file. 
+	 * @author Harris
+	 *
+	 */
 	private class DeleteTransactionMenuItemActionListener implements ActionListener {
 		public void actionPerformed(ActionEvent arg0) {
 			new DeleteTransactionWindow();
