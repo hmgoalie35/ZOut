@@ -1,16 +1,35 @@
 package zOut;
 
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
+import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 
 public class DeleteTransactionWindow {
 	private static JFrame frame;
 	private static boolean isFrameCreated;
 	private JLabel searchByDateLabel;
+	private JLabel lblMonth;
+	private JLabel lblDay;
+	private JLabel lblYear;
+    private JComboBox<Integer> monthBox;
+    private JComboBox<Integer> dayBox;
+    private JComboBox<Integer> yearBox;
+    private Integer[] days = new Integer[31];
+    private int year;
+    private Integer aYear = 0;
+    private JButton okButton;
+    private JTextField entry;
+
 	
 	/**
 	 * Constructor that sets up the necessary components.
@@ -37,6 +56,141 @@ public class DeleteTransactionWindow {
 		searchByDateLabel = new JLabel("Search By Date: ");
 		searchByDateLabel.setBounds(10, 11, 110, 14);
 		frame.getContentPane().add(searchByDateLabel);
+		
+		lblMonth = new JLabel("Month");
+		lblMonth.setBounds(125, 11, 46, 14);
+		frame.getContentPane().add(lblMonth);
+		
+		lblDay = new JLabel("Day");
+		lblDay.setBounds(186, 11, 46, 14);
+		frame.getContentPane().add(lblDay);
+		
+		lblYear = new JLabel("Year");
+		lblYear.setBounds(246, 11, 46, 14);
+		frame.getContentPane().add(lblYear);
+		
+		Calendar cal = new GregorianCalendar();					 
+		Integer numDays = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+		Integer[] months = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};		
+		year = cal.get(Calendar.YEAR);
+		aYear = year;
+		Integer[] years = new Integer[20];
+	    days = new Integer[numDays];
+		for(int i = 0; i < numDays; i++){
+			days[i] = i+1;
+		}
+		for (int i = year - 19, j = 0; i <= year; i++, j++) {
+			years[j] = i;
+		}	
+		
+		dayBox = new JComboBox<Integer>();
+		dayBox.setBounds(180,35, 40, 25);
+		dayBox.setFocusable(false);
+		frame.getContentPane().add(dayBox);
+		
+		for(int i = 0; i < numDays; i++){
+			dayBox.addItem(i+1);
+		}
+		dayBox.setSelectedIndex(cal.get(Calendar.DAY_OF_MONTH) -1);
+	
+		
+		monthBox = new JComboBox<Integer>(months);
+		monthBox.setBounds(124, 35, 40, 25);
+		monthBox.setSelectedIndex(cal.get(Calendar.MONTH));
+		monthBox.setFocusable(false);
+		monthBox.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				dayBox.removeAllItems();
+				Integer month = (Integer) monthBox.getSelectedItem();
+				if(month == 9 || month == 4 || month == 11 || month == 6){
+					days = new Integer[30];
+					for(int i = 0; i < 30; i++){
+						dayBox.addItem(i+1);
+					}
+				}else if(month == 2){
+					if(new GregorianCalendar().isLeapYear(aYear)){
+						days = new Integer[29];
+						for(int i = 0; i < 29; i++){
+							dayBox.addItem(i+1);
+						}
+					}else{
+						days = new Integer[28];
+						for(int i = 0; i < 28; i++){
+							dayBox.addItem(i+1);
+						}
+					}				
+				}else{
+					days = new Integer[31];
+					for(int i = 0; i < 31; i++){
+						dayBox.addItem(i+1);
+					}
+				}
+				dayBox.setSelectedIndex(new GregorianCalendar().get(Calendar.DAY_OF_MONTH) -1);
+			}
+		});
+		
+		
+		frame.getContentPane().add(monthBox);
+
+		yearBox = new JComboBox<Integer>(years);
+		yearBox.setBounds(237, 35, 60, 25);
+		yearBox.setSelectedIndex(years.length - 1);
+		yearBox.setFocusable(false);
+		yearBox.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				aYear = (Integer) yearBox.getSelectedItem();
+			}
+		});
+		frame.getContentPane().add(yearBox);
+		
+		okButton = new JButton("Ok");
+		okButton.setBounds(320, 38, 52, 20);
+		okButton.setFocusable(false);
+		frame.getContentPane().add(okButton);
+		
+		entry = new JTextField();
+		entry.setBounds(30, 60, 86, 20);
+		frame.getContentPane().add(entry);
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		
 		frame.setVisible(true);		
 	}
