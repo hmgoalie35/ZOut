@@ -211,6 +211,9 @@ public class ZOutGUI {
 		}
 		editMenu.add(deleteTransactionMenuItem);
 		
+		//delete this line when done coding the delete window!!
+		deleteTransactionMenuItem.doClick();
+		
 		viewMenu = new JMenu("Transaction History");
 		menuBar.add(viewMenu);
 		

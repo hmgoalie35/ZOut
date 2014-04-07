@@ -50,6 +50,9 @@ public class DeleteTransactionWindow {
 		frame.setResizable(false);	
 		frame.getContentPane().setLayout(null);
 		
+		//delete this line when done coding!!
+		frame.setAlwaysOnTop(true);
+		
 		searchByDateLabel = new JLabel("Search By Date: ");
 		searchByDateLabel.setBounds(95, 3, 110, 14);
 		frame.getContentPane().add(searchByDateLabel);
