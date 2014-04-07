@@ -44,26 +44,26 @@ public class DeleteTransactionWindow {
 		frame.setIconImage(Toolkit.getDefaultToolkit().getImage(ViewTransactionHistoryWindow.class.getResource("/zOut/zOutIcon.gif")));
 		isFrameCreated = true;
 				
-		frame.setBounds(600, 200, 400, 150);
+		frame.setBounds(600, 200, 275, 110);
 		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		frame.addWindowListener(new frameWindowListener());
 		frame.setResizable(false);	
 		frame.getContentPane().setLayout(null);
 		
 		searchByDateLabel = new JLabel("Search By Date: ");
-		searchByDateLabel.setBounds(10, 11, 110, 14);
+		searchByDateLabel.setBounds(95, 3, 110, 14);
 		frame.getContentPane().add(searchByDateLabel);
 		
 		lblMonth = new JLabel("Month");
-		lblMonth.setBounds(125, 11, 46, 14);
+		lblMonth.setBounds(10, 20, 46, 14);
 		frame.getContentPane().add(lblMonth);
 		
 		lblDay = new JLabel("Day");
-		lblDay.setBounds(186, 11, 46, 14);
+		lblDay.setBounds(70, 20, 46, 14);
 		frame.getContentPane().add(lblDay);
 		
 		lblYear = new JLabel("Year");
-		lblYear.setBounds(246, 11, 46, 14);
+		lblYear.setBounds(126, 20, 46, 14);
 		frame.getContentPane().add(lblYear);
 		
 		Calendar cal = new GregorianCalendar();					 
@@ -81,7 +81,7 @@ public class DeleteTransactionWindow {
 		}	
 		
 		dayBox = new JComboBox<Integer>();
-		dayBox.setBounds(180,35, 40, 25);
+		dayBox.setBounds(63, 42, 40, 25);
 		dayBox.setFocusable(false);
 		frame.getContentPane().add(dayBox);
 		
@@ -92,7 +92,7 @@ public class DeleteTransactionWindow {
 	
 		
 		monthBox = new JComboBox<Integer>(months);
-		monthBox.setBounds(124, 35, 40, 25);
+		monthBox.setBounds(10, 42, 40, 25);
 		monthBox.setSelectedIndex(cal.get(Calendar.MONTH));
 		monthBox.setFocusable(false);
 		monthBox.addActionListener(new ActionListener(){
@@ -130,7 +130,7 @@ public class DeleteTransactionWindow {
 		frame.getContentPane().add(monthBox);
 
 		yearBox = new JComboBox<Integer>(years);
-		yearBox.setBounds(237, 35, 60, 25);
+		yearBox.setBounds(115, 42, 60, 25);
 		yearBox.setSelectedIndex(years.length - 1);
 		yearBox.setFocusable(false);
 		yearBox.addActionListener(new ActionListener(){
@@ -141,48 +141,11 @@ public class DeleteTransactionWindow {
 		frame.getContentPane().add(yearBox);
 		
 		searchButton = new JButton("Search");
-		searchButton.setBounds(309, 38, 75, 20);
+		searchButton.setBounds(184, 45, 75, 20);
 		searchButton.setFocusable(false);
+		searchButton.addActionListener(new searchBtnListener());
 		frame.getContentPane().add(searchButton);
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+			
 		
 		
 		frame.setVisible(true);		
@@ -213,6 +176,14 @@ public class DeleteTransactionWindow {
 		public void windowClosing(WindowEvent arg0) {
 			closeDeleteTransactionWindow();
 		}
+	}
+	private class searchBtnListener implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			//resize the frame to show a confirmation box so user can confirm the total
+		}
+		
 	}
 	public static void main(String[] args) {
 		new DeleteTransactionWindow();
