@@ -12,7 +12,6 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JTextField;
 
 public class DeleteTransactionWindow {
 	private static JFrame frame;
@@ -27,10 +26,8 @@ public class DeleteTransactionWindow {
     private Integer[] days = new Integer[31];
     private int year;
     private Integer aYear = 0;
-    private JButton okButton;
-    private JTextField entry;
+    private JButton searchButton;
 
-	
 	/**
 	 * Constructor that sets up the necessary components.
 	 * We check to see if this frame was already created and if it was then we dispose it and create a new one. this is 
@@ -143,14 +140,10 @@ public class DeleteTransactionWindow {
 		});
 		frame.getContentPane().add(yearBox);
 		
-		okButton = new JButton("Ok");
-		okButton.setBounds(320, 38, 52, 20);
-		okButton.setFocusable(false);
-		frame.getContentPane().add(okButton);
-		
-		entry = new JTextField();
-		entry.setBounds(30, 60, 86, 20);
-		frame.getContentPane().add(entry);
+		searchButton = new JButton("Search");
+		searchButton.setBounds(309, 38, 75, 20);
+		searchButton.setFocusable(false);
+		frame.getContentPane().add(searchButton);
 		
 		
 		
