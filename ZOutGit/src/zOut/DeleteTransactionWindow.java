@@ -83,6 +83,7 @@ public class DeleteTransactionWindow {
 		dayBox = new JComboBox<Integer>();
 		dayBox.setBounds(63, 42, 40, 25);
 		dayBox.setFocusable(false);
+		dayBox.setBorder(null);
 		frame.getContentPane().add(dayBox);
 		
 		for(int i = 0; i < numDays; i++){
@@ -94,6 +95,7 @@ public class DeleteTransactionWindow {
 		monthBox = new JComboBox<Integer>(months);
 		monthBox.setBounds(10, 42, 40, 25);
 		monthBox.setSelectedIndex(cal.get(Calendar.MONTH));
+		monthBox.setBorder(null);
 		monthBox.setFocusable(false);
 		monthBox.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
@@ -132,6 +134,7 @@ public class DeleteTransactionWindow {
 		yearBox = new JComboBox<Integer>(years);
 		yearBox.setBounds(115, 42, 60, 25);
 		yearBox.setSelectedIndex(years.length - 1);
+		yearBox.setBorder(null);
 		yearBox.setFocusable(false);
 		yearBox.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
