@@ -10,14 +10,16 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
+import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -41,6 +43,7 @@ import javax.swing.Timer;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.JProgressBar;
+
 import java.awt.Color;
 /**
  * Create the Graphical User Interface
@@ -79,6 +82,7 @@ public class ZOutGUI {
 	//Misc.
 	private NumberFormat moneyFormat = NumberFormat.getCurrencyInstance();
 	private ArrayList<Double> checkList, creditCardList; // list appended to whenever cc or check is added.
+	private static ArrayList<Transaction> transactionList = new ArrayList<>();
 	private double dollarVar = 0, twoVar = 0, fiveVar = 0, tenVar = 0,
 			twentyVar = 0, fiftyVar = 0, hundredVar = 0, pennyVar = 0,
 			nickelVar = 0, dimeVar = 0, quarterVar = 0, creditVar = 0, 
@@ -91,15 +95,11 @@ public class ZOutGUI {
 	private Properties properties;
 	
 	/*
-	 * We implement a progress bar so the user can visually see the progress of the calculation that takes
-	 * place when they hit the calculate total button.
-	 * The timer is used to update the progress of the progressbar.
-	 * When the calculate total button is pressed the progress bar displays computing... and then Done when 
-	 * the process is done. Also note that after a calculation, whenever the user goes to enter a new value into
-	 * one of the text entries, the progress bar is reset to 0.
+	 * documentation for progress bar and stuff needed
 	 */
 	private JProgressBar progressBar;
 	private Timer timer;
+	private JMenuItem deleteTransactionMenuItem;
 	/**
 	 * Constructor that sets up the necessary folder if it does not already exist as well as the History.zof file if it does not exist. 
 	 * Sets up necessary components. 
@@ -128,14 +128,16 @@ public class ZOutGUI {
 				dir.mkdir();
 				file.createNewFile();
 				propertyFile.createNewFile();
-				out = new PrintWriter(new FileWriter(file, true));
+				//out = new PrintWriter(new FileWriter(file));
 			}else if(!file.exists()) {
-				out = new PrintWriter(new FileWriter(file, true));
+				file.createNewFile();
+				//out = new PrintWriter(new FileWriter(file));
 			}else if(!propertyFile.exists()){
 				propertyFile.createNewFile();
 			}
 			path = dir.getPath();	
-			out = new PrintWriter(new FileWriter(file, true));
+			file.createNewFile();
+			//out = new PrintWriter(new FileWriter(file, true));
 		} catch (FileNotFoundException arg) {
 			JOptionPane.showMessageDialog(mainWindow, "History file not created, please delete the History folder and restart the program", "Error",JOptionPane.ERROR_MESSAGE);
 		} catch (IOException e1) {
@@ -158,6 +160,7 @@ public class ZOutGUI {
 			JOptionPane.showMessageDialog(mainWindow, "Cannot locate properties.txt File, please restart the program", "Error locating properties.txt", JOptionPane.ERROR_MESSAGE);
 		}
 					
+		onStartup();
 		checkList = new ArrayList<Double>();
 		creditCardList = new ArrayList<Double>();
 
@@ -204,6 +207,14 @@ public class ZOutGUI {
 		deleteCheckMenuItem.setEnabled(false);
 		deleteCheckMenuItem.addActionListener(new DeleteCheckMenuItemActionListener());
 		editMenu.add(deleteCheckMenuItem);
+		
+		deleteTransactionMenuItem = new JMenuItem("Delete a Transaction");
+		deleteTransactionMenuItem.setEnabled(false);
+		deleteTransactionMenuItem.addActionListener(new DeleteTransactionMenuItemActionListener());
+		if(transactionList.size() > 0){
+			deleteTransactionMenuItem.setEnabled(true);
+		}
+		editMenu.add(deleteTransactionMenuItem);
 		
 		viewMenu = new JMenu("Transaction History");
 		menuBar.add(viewMenu);
@@ -536,7 +547,48 @@ public class ZOutGUI {
 	public static void main(String[] args) {
 		new ZOutGUI();
 	}
-
+	
+	static ArrayList<Transaction> getTransactionList(){
+		return transactionList;
+	}
+	public void onStartup(){
+		boolean done = false;
+		transactionList.clear();
+		try {
+			FileInputStream fis = new FileInputStream(file);
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			while(!done){
+			transactionList.add((Transaction) ois.readObject());
+			}
+			fis.close();
+			ois.close();
+		}catch (FileNotFoundException ex) {
+			JOptionPane.showMessageDialog(mainWindow, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+		}catch (EOFException ex) {
+			done = true;				
+		}catch (ClassNotFoundException e1) {
+			JOptionPane.showMessageDialog(mainWindow, "Error: " + e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+		}catch(Exception e){
+			JOptionPane.showMessageDialog(mainWindow, "Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+	public void save(){
+		try {
+		    FileOutputStream fos = new FileOutputStream(file);
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+			for (Transaction t : transactionList) {
+				oos.writeObject(t);
+			}
+			fos.flush();
+			fos.close();
+			oos.flush();
+			oos.close();
+		} catch (FileNotFoundException ex) {
+			JOptionPane.showMessageDialog(mainWindow, "Error" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+		} catch (IOException ex) {
+			JOptionPane.showMessageDialog(mainWindow, "Error" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+		}
+	}
 	/**
 	 * KeyListener for when a key is pressed in the $1 entry. this updates the corresponding label under the "Amount" column provided
 	 * the key pressed is a valid integer, or if the backspace or enter keys are pressed. if the backspace key is pressed the fields as
@@ -1274,9 +1326,12 @@ public class ZOutGUI {
 				SimpleDateFormat dateFormat = new SimpleDateFormat(
 						"EEEE MM-dd-yyyy hh:mm:ssa");
 				String date = dateFormat.format(cal.getTime());
-				Transaction transaction = new Transaction(date, checkList.size(), moneyFormat.format(checkVar), creditCardList.size(), moneyFormat.format(creditVar), moneyFormat.format(dollarVar + twoVar + fiveVar+ tenVar + twentyVar + fiftyVar + hundredVar	+ pennyVar + nickelVar + dimeVar + quarterVar), moneyFormat.format(Double.parseDouble(modifyEntry.getText())), subVar.getText(), totalVar.getText());			
-				out.println(transaction);
-				out.flush();
+				Transaction transaction = new Transaction(date, checkList.size(), moneyFormat.format(checkVar), creditCardList.size(), moneyFormat.format(creditVar), moneyFormat.format(dollarVar + twoVar + fiveVar+ tenVar + twentyVar + fiftyVar + hundredVar	+ pennyVar + nickelVar + dimeVar + quarterVar), moneyFormat.format(Double.parseDouble(modifyEntry.getText())), subVar.getText(), totalVar.getText());
+				transactionList.add(transaction);
+				deleteTransactionMenuItem.setEnabled(true);
+				save();
+				//out.println(transaction);
+				//out.flush();
 			} else {
 				int i = JOptionPane.showConfirmDialog(mainWindow,"Resulting Calculation is Negative \n Are You Sure This is Correct?", "Negative Result",JOptionPane.YES_NO_OPTION);
 				if (i == JOptionPane.YES_OPTION) {
@@ -1289,9 +1344,12 @@ public class ZOutGUI {
 					GregorianCalendar cal = new GregorianCalendar();
 					SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE MM-dd-yyyy hh:mm:ssa");
 					String date = dateFormat.format(cal.getTime());
-					Transaction transaction = new Transaction(date, checkList.size(), moneyFormat.format(checkVar), creditCardList.size(), moneyFormat.format(creditVar), moneyFormat.format(dollarVar + twoVar + fiveVar+ tenVar + twentyVar + fiftyVar + hundredVar	+ pennyVar + nickelVar + dimeVar + quarterVar), moneyFormat.format(Double.parseDouble(modifyEntry.getText())), subVar.getText(), totalVar.getText());			
-					out.println(transaction);
-					out.flush();
+					Transaction transaction = new Transaction(date, checkList.size(), moneyFormat.format(checkVar), creditCardList.size(), moneyFormat.format(creditVar), moneyFormat.format(dollarVar + twoVar + fiveVar+ tenVar + twentyVar + fiftyVar + hundredVar	+ pennyVar + nickelVar + dimeVar + quarterVar), moneyFormat.format(Double.parseDouble(modifyEntry.getText())), subVar.getText(), totalVar.getText());
+					transactionList.add(transaction);
+					deleteTransactionMenuItem.setEnabled(true);
+					save();
+					//out.println(transaction);
+					//out.flush();
 				}else if (i == JOptionPane.NO_OPTION){
 					totalVar.setText(moneyFormat.format(0));
 				}
@@ -1356,7 +1414,10 @@ public class ZOutGUI {
 			helpFrame.dispose();
 		}catch(NullPointerException ex){
 		}
-		
+		try{
+			DeleteTransactionWindow.closeDeleteTransactionWindow();
+		}catch(NullPointerException ex){
+		}
 		mainWindow.dispose();
 	}
 	/**
@@ -1438,7 +1499,8 @@ public class ZOutGUI {
 	 * ActionListener for when the delete transaction history menu item in the Transaction History menu is pressed.
 	 * after two confirmations by the user the transaction history file is cleared of all data it contained. note that
 	 * the file itself is not actually deleted, all of the data in the file is removed so a new clean file is present.
-	 * the view transaction history window is also closed when this occurs if it was opened.
+	 * the view transaction his
+	 * tory window is also closed when this occurs if it was opened.
 	 * @author Harris Pittinsky
 	 */
 	private class DeleteHistoryMenuItemActionListener implements ActionListener {
@@ -1451,18 +1513,28 @@ public class ZOutGUI {
 						ViewTransactionHistoryWindow.closeTransHistoryWindow();
 					} catch (NullPointerException ex) {
 					}
-					out.close();
-					try {
-						if (file.exists()) {
-							out = new PrintWriter(file);
-							// note that the file still exists, a blank file
-							// just overwrites the old file, clearing it of any data.
-							// the file needs to exists because it is a vital part of the program.
-							JOptionPane.showMessageDialog(mainWindow,"         History.zof Reset","Reset Successful",JOptionPane.INFORMATION_MESSAGE);
-						} else {
-							JOptionPane.showMessageDialog(mainWindow,"History.zof Does Not Exist","Reset Unsuccessful",JOptionPane.INFORMATION_MESSAGE);
-						}
-					} catch (FileNotFoundException e1) {
+					if (file.exists()) {
+							transactionList.clear();
+							deleteTransactionMenuItem.setEnabled(false);
+							System.gc();
+							try {
+								Thread.sleep(50);
+								if(file.delete()){
+									JOptionPane.showMessageDialog(mainWindow,"         History.zof Reset","Reset Successful",JOptionPane.INFORMATION_MESSAGE);
+
+								}else{
+									JOptionPane.showMessageDialog(mainWindow,"         History.zof Reset Failed","Reset Unsuccessful",JOptionPane.ERROR_MESSAGE);
+								}
+							} catch (InterruptedException e1) {
+								// TODO Auto-generated catch block
+								JOptionPane.showMessageDialog(mainWindow,"Error: " + e1.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+
+							}												
+						
+						// note that the file still exists, a blank file
+						// just overwrites the old file, clearing it of any data.
+						// the file needs to exists because it is a vital part of the program.
+					} else {
 						JOptionPane.showMessageDialog(mainWindow,"History.zof Does Not Exist","Reset Unsuccessful",JOptionPane.INFORMATION_MESSAGE);
 					}
 				}
@@ -1626,5 +1698,10 @@ public class ZOutGUI {
 			}
 			progressBar.setValue(progressBar.getValue() + 1);				
 		}		
+	}
+	private class DeleteTransactionMenuItemActionListener implements ActionListener {
+		public void actionPerformed(ActionEvent arg0) {
+			new DeleteTransactionWindow();
+		}
 	}
 }
