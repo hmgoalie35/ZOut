@@ -7,6 +7,4 @@ add arraylist of transactions that loads all current transactions in the History
 if there are tranasctions to load then this arraylist will be used by the viewtransactionhistorywindow to display
 the transactions to the user. 
 
-in order to implement this i need to change the writing of an object to the file to an objectoutputstream
-
 this will allow me to then allow the user to delete a transaction if they had made a mistake.
