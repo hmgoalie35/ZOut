@@ -12,6 +12,8 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 
 public class DeleteTransactionWindow {
 	private static JFrame frame;
@@ -27,6 +29,7 @@ public class DeleteTransactionWindow {
     private int year;
     private Integer aYear = 0;
     private JButton searchButton;
+    private Transaction currentTransaction;
 
 	/**
 	 * Constructor that sets up the necessary components.
@@ -34,8 +37,6 @@ public class DeleteTransactionWindow {
 	 * done in case the user presses the view transaction history window a few times in a row. 
 	 */
    public DeleteTransactionWindow(){
-	   /*Sunday 04-06-2014 08:21:42PM*/
-	   /*$390.00*/
 		if(isFrameCreated){
 			frame.dispose();
 			isFrameCreated = false;
@@ -172,6 +173,25 @@ public class DeleteTransactionWindow {
 	public static boolean isFrameCreated(){
 		return isFrameCreated;
 	}
+	
+	
+	/**
+	 * checks to see if the str parameter can be parsed to a double of base 10. 
+	 * ex: "5.5", "1.5", "3" are valid while "@", "f" are invalid.
+	 * Note-- integer values do work
+	 * @param str the string to check and determine if it is a valid double
+	 * @return true if the string can be a double, false if it cannot.
+	 */
+	public boolean canBeDouble(String str) {
+		boolean retVal = false;
+		try {
+			Double.parseDouble(str);
+			if(!(str.substring(str.length()-1).equals(".")))	retVal = true;
+		} catch (NumberFormatException e) {
+			retVal = false;
+		}
+		return retVal;
+	}
 	/**
 	 * ActionListener for when the X is pressed to close the window.
 	 * Calls the closeTransHistoryWindow() method.
@@ -183,10 +203,70 @@ public class DeleteTransactionWindow {
 			closeDeleteTransactionWindow();
 		}
 	}
+	
 	private class searchBtnListener implements ActionListener{
-
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
+			int month = ((int) monthBox.getSelectedItem()) -1;
+			int day = (int) dayBox.getSelectedItem();
+			int year = (int) yearBox.getSelectedItem();
+			String date = month + "-" + day + "-" + year;
+			
+			   /*Sunday 04-06-2014 08:21:42PM*/
+			   /*$390.00*/
+			for(Transaction trans: ZOutGUI.getTransactionList()){
+				//System.out.println("Trans Date: " + trans.getMonthDayYear());
+				//System.out.println("user Month day year: " + month +"-" +  day + "-" + year);
+				if(trans.getMonthDayYear().equals(date)){
+					currentTransaction = trans;
+					monthBox.setEnabled(false);
+					dayBox.setEnabled(false);
+					yearBox.setEnabled(false);
+					searchButton.setEnabled(false);
+					frame.setSize(275, 210);
+					JLabel transFoundLabel = new JLabel("Transaction Located");
+					transFoundLabel.setBounds(83, 70, 110, 30);
+					frame.getContentPane().add(transFoundLabel);
+					JLabel confirmLabel = new JLabel("Confirm Transaction's Total");
+					confirmLabel.setBounds(65, 89, 130, 30);
+					frame.getContentPane().add(confirmLabel);
+					JLabel instructionLabel = new JLabel("Enter Amount Without \'$\'");
+					instructionLabel.setBounds(72, 105, 130, 30);
+					frame.getContentPane().add(instructionLabel);
+					final JTextField entry = new JTextField();
+					entry.setBounds(67, 130, 130, 20);
+					frame.getContentPane().add(entry);
+					entry.setFocusable(true);
+					entry.requestFocus();
+					entry.setToolTipText("Press <Enter> To Submit");
+					entry.setCaretPosition(entry.getText().length());
+					entry.addActionListener(new ActionListener(){
+						public void actionPerformed(ActionEvent arg){
+							if(canBeDouble(entry.getText())){
+								double value = Double.parseDouble(entry.getText());
+								System.out.println(currentTransaction.getTotal());
+								if(value == currentTransaction.getTotal()){
+									ZOutGUI.deleteTransaction(currentTransaction);
+									JOptionPane.showMessageDialog(frame, "Transaction Deleted", "Delete Successful", JOptionPane.INFORMATION_MESSAGE);
+									entry.setText("");
+									frame.dispose();
+									if(ViewTransactionHistoryWindow.isFrameCreated()){
+										ViewTransactionHistoryWindow.closeTransHistoryWindow();
+										new ViewTransactionHistoryWindow();
+									}
+								}else{
+									JOptionPane.showMessageDialog(frame, "Total Not Found, Enter Again", "Invalid Total", JOptionPane.ERROR_MESSAGE);
+									entry.setText("");
+								}
+							}else{
+								JOptionPane.showMessageDialog(frame, "Please Enter a Valid Input", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+								entry.setText("");
+							}
+						}
+					});
+					
+				}
+			}
 			//resize the frame to show a confirmation box so user can confirm the total
 		}
 		
