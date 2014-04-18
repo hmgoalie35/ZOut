@@ -23,6 +23,7 @@ import java.io.ObjectOutputStream;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Properties;
 
@@ -85,11 +86,12 @@ public class ZOutGUI {
 	private double dollarVar = 0, twoVar = 0, fiveVar = 0, tenVar = 0,
 			twentyVar = 0, fiftyVar = 0, hundredVar = 0, pennyVar = 0,
 			nickelVar = 0, dimeVar = 0, quarterVar = 0, creditVar = 0, 
-			checkVar = 0, moneyAmount = 0;
+			checkVar = 0, moneyAmount = 0, total = 0;
 
 	private String modifyData;
 	private static String path;
 	private File file, dir;
+	private static File fileStatic;
 	private Properties properties;
 	
 	/*
@@ -117,6 +119,7 @@ public class ZOutGUI {
 		//Create folder/files if aren't already created.
 		dir = new File("History"); //creates folder with this name.
 		file = new File(dir, "History.zof");//creates file in the above folder with the name History.zof
+		fileStatic = new File(dir, "History.zof");
 		File propertyFile = new File(dir, "properties.txt");//creates the properties.txt file in the folder specified above.
 		properties = new Properties();
 		
@@ -554,6 +557,10 @@ public class ZOutGUI {
 	static ArrayList<Transaction> getTransactionList(){
 		return transactionList;
 	}
+	static void deleteTransaction(Transaction index){
+		transactionList.remove(index);
+		saveStatic();
+	}
 	
 	/**
 	 * Invoked whenever the program starts. Reads any data from the History.zof file and adds it to the transactionList.
@@ -579,6 +586,32 @@ public class ZOutGUI {
 			JOptionPane.showMessageDialog(mainWindow, "Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 		}
 	}
+	
+	/**
+	 * Called whenever a new Transaction object is created. Called in the CalculateBtnActionListener class. 
+	 * Saves all of the objects in the transactionList to the file, overwriting anything that was previously in 
+	 * the file. This is ok though because we just write the data that is in the transactionList, which contains
+	 * the data that was previously in the file (on startup the transactionList is populated with any data that
+	 * was in the file)
+	 */
+	public static void saveStatic(){
+		try {
+		    FileOutputStream fos = new FileOutputStream(fileStatic);
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+			for (Transaction t : transactionList) {
+				oos.writeObject(t);
+			}
+			fos.flush();
+			fos.close();
+			oos.flush();
+			oos.close();
+		} catch (FileNotFoundException ex) {
+			JOptionPane.showMessageDialog(null, "Error" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+		} catch (IOException ex) {
+			JOptionPane.showMessageDialog(null, "Error" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+		}
+	}	
+	
 	
 	/**
 	 * Called whenever a new Transaction object is created. Called in the CalculateBtnActionListener class. 
@@ -625,6 +658,7 @@ public class ZOutGUI {
 			progressBar.setStringPainted(false);
 			if (arg0.getKeyChar() != KeyEvent.VK_BACK_SPACE && arg0.getKeyChar() != KeyEvent.VK_ENTER) {
 				totalVar.setText(moneyFormat.format(0));
+				total = 0;
 				if (canBeInt(oneEntry.getText())) {
 					int amount = Integer.parseInt(oneEntry.getText());
 					dollarVar = amount;
@@ -638,6 +672,7 @@ public class ZOutGUI {
 				}
 			} else {
 				totalVar.setText(moneyFormat.format(0));
+				total = 0;
 				calculateSubTotal();
 				if (canBeInt(oneEntry.getText())) {
 					int amount = Integer.parseInt(oneEntry.getText());
@@ -672,6 +707,7 @@ public class ZOutGUI {
 			progressBar.setStringPainted(false);
 			if (e.getKeyChar() != KeyEvent.VK_BACK_SPACE && e.getKeyChar() != KeyEvent.VK_ENTER) {
 				totalVar.setText(moneyFormat.format(0));
+				total = 0;
 				if (canBeInt(twoEntry.getText())) {
 					int amount = Integer.parseInt(twoEntry.getText()) * TWO_DOLLAR;
 					twoVar = amount;
@@ -685,6 +721,7 @@ public class ZOutGUI {
 				}
 			} else {
 				totalVar.setText(moneyFormat.format(0));
+				total = 0;
 				calculateSubTotal();
 				if (canBeInt(twoEntry.getText())) {
 					int amount = Integer.parseInt(twoEntry.getText()) * TWO_DOLLAR;
@@ -719,6 +756,7 @@ public class ZOutGUI {
 			progressBar.setStringPainted(false);
 			if (e.getKeyChar() != KeyEvent.VK_BACK_SPACE && e.getKeyChar() != KeyEvent.VK_ENTER) {
 				totalVar.setText(moneyFormat.format(0));
+				total = 0;
 				if (canBeInt(fiveEntry.getText())) {
 					int amount = Integer.parseInt(fiveEntry.getText()) * FIVE;
 					fiveVar = amount;
@@ -732,6 +770,7 @@ public class ZOutGUI {
 				}
 			} else {
 				totalVar.setText(moneyFormat.format(0));
+				total = 0;
 				calculateSubTotal();
 				if (canBeInt(fiveEntry.getText())) {
 					int amount = Integer.parseInt(fiveEntry.getText()) * FIVE;
@@ -766,6 +805,7 @@ public class ZOutGUI {
 			progressBar.setStringPainted(false);
 			if (arg0.getKeyChar() != KeyEvent.VK_BACK_SPACE && arg0.getKeyChar() != KeyEvent.VK_ENTER) {
 				totalVar.setText(moneyFormat.format(0));
+				total = 0;
 				if (canBeInt(tenEntry.getText())) {
 					int amount = Integer.parseInt(tenEntry.getText()) * TEN;
 					tenVar = amount;
@@ -779,6 +819,7 @@ public class ZOutGUI {
 				}
 			} else {
 				totalVar.setText(moneyFormat.format(0));
+				total = 0;
 				calculateSubTotal();
 				if (canBeInt(tenEntry.getText())) {
 					int amount = Integer.parseInt(tenEntry.getText()) * TEN;
@@ -813,6 +854,7 @@ public class ZOutGUI {
 			progressBar.setStringPainted(false);
 			if (e.getKeyChar() != KeyEvent.VK_BACK_SPACE && e.getKeyChar() != KeyEvent.VK_ENTER) {
 				totalVar.setText(moneyFormat.format(0));
+				total = 0;
 				if (canBeInt(twentyEntry.getText())) {
 					int amount = Integer.parseInt(twentyEntry.getText()) * TWENTY;
 					twentyVar = amount;
@@ -826,6 +868,7 @@ public class ZOutGUI {
 				}
 			} else {
 				totalVar.setText(moneyFormat.format(0));
+				total = 0;
 				calculateSubTotal();
 				if (canBeInt(twentyEntry.getText())) {
 					int amount = Integer.parseInt(twentyEntry.getText()) * TWENTY;
@@ -860,6 +903,7 @@ public class ZOutGUI {
 			progressBar.setStringPainted(false);
 			if (e.getKeyChar() != KeyEvent.VK_BACK_SPACE && e.getKeyChar() != KeyEvent.VK_ENTER) {
 				totalVar.setText(moneyFormat.format(0));
+				total = 0;
 				if (canBeInt(fiftyEntry.getText())) {
 					int amount = Integer.parseInt(fiftyEntry.getText()) * FIFTY;
 					fiftyVar = amount;
@@ -873,6 +917,7 @@ public class ZOutGUI {
 				}
 			} else {
 				totalVar.setText(moneyFormat.format(0));
+				total = 0;
 				calculateSubTotal();
 				if (canBeInt(fiftyEntry.getText())) {
 					int amount = Integer.parseInt(fiftyEntry.getText()) * FIFTY;
@@ -907,6 +952,7 @@ public class ZOutGUI {
 			progressBar.setStringPainted(false);
 			if (e.getKeyChar() != KeyEvent.VK_BACK_SPACE && e.getKeyChar() != KeyEvent.VK_ENTER) {
 				totalVar.setText(moneyFormat.format(0));
+				total = 0;
 				if (canBeInt(hundredEntry.getText())) {
 					int amount = Integer.parseInt(hundredEntry.getText()) * HUNDRED;
 					hundredVar = amount;
@@ -920,6 +966,7 @@ public class ZOutGUI {
 				}
 			} else {
 				totalVar.setText(moneyFormat.format(0));
+				total = 0;
 				calculateSubTotal();
 				if (canBeInt(hundredEntry.getText())) {
 					int amount = Integer.parseInt(hundredEntry.getText()) * HUNDRED;
@@ -954,6 +1001,7 @@ public class ZOutGUI {
 			progressBar.setStringPainted(false);
 			if (e.getKeyChar() != KeyEvent.VK_BACK_SPACE && e.getKeyChar() != KeyEvent.VK_ENTER) {
 				totalVar.setText(moneyFormat.format(0));
+				total = 0;
 				if (canBeInt(pennyEntry.getText())) {
 					double amount = Integer.parseInt(pennyEntry.getText()) * PENNY;
 					pennyVar = amount;
@@ -967,6 +1015,7 @@ public class ZOutGUI {
 				}
 			} else {
 				totalVar.setText(moneyFormat.format(0));
+				total = 0;
 				calculateSubTotal();
 				if (canBeInt(pennyEntry.getText())) {
 					double amount = Integer.parseInt(pennyEntry.getText()) * PENNY;
@@ -1001,6 +1050,7 @@ public class ZOutGUI {
 			progressBar.setStringPainted(false);
 			if (e.getKeyChar() != KeyEvent.VK_BACK_SPACE && e.getKeyChar() != KeyEvent.VK_ENTER) {
 				totalVar.setText(moneyFormat.format(0));
+				total = 0;
 				if (canBeInt(nickelEntry.getText())) {
 					double amount = Integer.parseInt(nickelEntry.getText()) * NICKEL;
 					nickelVar = amount;
@@ -1014,6 +1064,7 @@ public class ZOutGUI {
 				}
 			} else {
 				totalVar.setText(moneyFormat.format(0));
+				total = 0;
 				calculateSubTotal();
 				if (canBeInt(nickelEntry.getText())) {
 					double amount = Integer.parseInt(nickelEntry.getText()) * NICKEL;
@@ -1048,6 +1099,7 @@ public class ZOutGUI {
 			progressBar.setStringPainted(false);
 			if (e.getKeyChar() != KeyEvent.VK_BACK_SPACE && e.getKeyChar() != KeyEvent.VK_ENTER) {
 				totalVar.setText(moneyFormat.format(0));
+				total = 0;
 				if (canBeInt(dimeEntry.getText())) {
 					double amount = Integer.parseInt(dimeEntry.getText()) * DIME;
 					dimeVar = amount;
@@ -1061,6 +1113,7 @@ public class ZOutGUI {
 				}
 			} else {
 				totalVar.setText(moneyFormat.format(0));
+				total = 0;
 				calculateSubTotal();
 				if (canBeInt(dimeEntry.getText())) {
 					double amount = Integer.parseInt(dimeEntry.getText()) * DIME;
@@ -1095,6 +1148,7 @@ public class ZOutGUI {
 			progressBar.setStringPainted(false);
 			if (e.getKeyChar() != KeyEvent.VK_BACK_SPACE && e.getKeyChar() != KeyEvent.VK_ENTER) {
 				totalVar.setText(moneyFormat.format(0));
+				total = 0;
 				if (canBeInt(quarterEntry.getText())) {
 					double amount = Integer.parseInt(quarterEntry.getText()) * QUARTER;
 					quarterVar = amount;
@@ -1108,6 +1162,7 @@ public class ZOutGUI {
 				}
 			} else {
 				totalVar.setText(moneyFormat.format(0));
+				total = 0;
 				calculateSubTotal();
 				if (canBeInt(quarterEntry.getText())) {
 					double amount = Integer.parseInt(quarterEntry.getText()) * QUARTER;
@@ -1333,16 +1388,17 @@ public class ZOutGUI {
 			progressBar.setStringPainted(false);
 			double modifyAmt = Double.parseDouble(modifyEntry.getText());
 			calculateSubTotal();			
-			double total = moneyAmount - modifyAmt;
-			if (total >= 0) {
+			double amount = moneyAmount - modifyAmt;
+			if (amount >= 0) {
 				timer.start();
 				progressBar.setStringPainted(true);
-				totalVar.setText(moneyFormat.format(total));
+				totalVar.setText(moneyFormat.format(amount));
+				total = amount;
 				GregorianCalendar cal = new GregorianCalendar();
 				SimpleDateFormat dateFormat = new SimpleDateFormat(
 						"EEEE MM-dd-yyyy hh:mm:ssa");
 				String date = dateFormat.format(cal.getTime());
-				Transaction transaction = new Transaction(date, checkList.size(), moneyFormat.format(checkVar), creditCardList.size(), moneyFormat.format(creditVar), moneyFormat.format(dollarVar + twoVar + fiveVar+ tenVar + twentyVar + fiftyVar + hundredVar	+ pennyVar + nickelVar + dimeVar + quarterVar), moneyFormat.format(Double.parseDouble(modifyEntry.getText())), subVar.getText(), totalVar.getText());
+				Transaction transaction = new Transaction(cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.YEAR), date, checkList.size(), checkVar, creditCardList.size(), creditVar, dollarVar + twoVar + fiveVar+ tenVar + twentyVar + fiftyVar + hundredVar	+ pennyVar + nickelVar + dimeVar + quarterVar, Double.parseDouble(modifyEntry.getText()), moneyAmount, total);
 				transactionList.add(transaction);
 				deleteTransactionMenuItem.setEnabled(true);
 				save();
@@ -1351,26 +1407,26 @@ public class ZOutGUI {
 				if (i == JOptionPane.YES_OPTION) {
 					timer.start();
 					progressBar.setStringPainted(true);
-					String data = moneyFormat.format(total);
+					String data = moneyFormat.format(amount);
 					data = data.substring(2, data.length() - 1);
 					String edited = "$-" + data;
 					totalVar.setText(edited);
+					total = amount;
 					GregorianCalendar cal = new GregorianCalendar();
 					SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE MM-dd-yyyy hh:mm:ssa");
 					String date = dateFormat.format(cal.getTime());
-					Transaction transaction = new Transaction(date, checkList.size(), moneyFormat.format(checkVar), creditCardList.size(), moneyFormat.format(creditVar), moneyFormat.format(dollarVar + twoVar + fiveVar+ tenVar + twentyVar + fiftyVar + hundredVar	+ pennyVar + nickelVar + dimeVar + quarterVar), moneyFormat.format(Double.parseDouble(modifyEntry.getText())), subVar.getText(), totalVar.getText());
+					Transaction transaction = new Transaction(cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.YEAR), date, checkList.size(), checkVar, creditCardList.size(), creditVar, dollarVar + twoVar + fiveVar+ tenVar + twentyVar + fiftyVar + hundredVar	+ pennyVar + nickelVar + dimeVar + quarterVar, Double.parseDouble(modifyEntry.getText()), moneyAmount, total);
 					transactionList.add(transaction);
 					deleteTransactionMenuItem.setEnabled(true);
 					save();
 				}else if (i == JOptionPane.NO_OPTION){
 					totalVar.setText(moneyFormat.format(0));
+					total = 0;
 				}
 			}
 			if(ViewTransactionHistoryWindow.isFrameCreated()){
 				ViewTransactionHistoryWindow.closeTransHistoryWindow();
 				new ViewTransactionHistoryWindow();
-			}else{
-				
 			}
 			calculateBtn.setEnabled(false);
 		}	
@@ -1576,6 +1632,7 @@ public class ZOutGUI {
 					creditAmtLabel.setText(moneyFormat.format(creditVar));
 					calculateSubTotal();
 					totalVar.setText(moneyFormat.format(0));
+					total = 0;
 					if(creditCardList.size() == 0){
 						deleteCreditMenuItem.setEnabled(false);
 					}
@@ -1616,6 +1673,7 @@ public class ZOutGUI {
 						checkAmtLabel.setText(moneyFormat.format(checkVar));
 						calculateSubTotal();	
 						totalVar.setText(moneyFormat.format(0));
+						total = 0;
 						if(checkList.size() == 0){
 							deleteCheckMenuItem.setEnabled(false);
 						}
@@ -1689,6 +1747,7 @@ public class ZOutGUI {
 				checkCountLabel.setText(checkList.size() + " Check(s)");
 				calculateSubTotal();
 				totalVar.setText(moneyFormat.format(0));
+				total = 0;
 				
 				progressBar.setString("Calculating...");
 				progressBar.setValue(0);
@@ -1721,7 +1780,7 @@ public class ZOutGUI {
 	 */
 	private class DeleteTransactionMenuItemActionListener implements ActionListener {
 		public void actionPerformed(ActionEvent arg0) {
-			new DeleteTransactionWindow();
+			new DeleteTransactionWindow();			
 		}
 	}
 }
