@@ -2,3 +2,6 @@
 /History
 backup
 DeleteTransBackup.java
+.settings
+.classpath
+.project
