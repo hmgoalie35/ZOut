@@ -214,9 +214,6 @@ public class ZOutGUI {
 		}
 		editMenu.add(deleteTransactionMenuItem);
 		
-		//delete this line when done coding the delete window!!
-		deleteTransactionMenuItem.doClick();
-		
 		viewMenu = new JMenu("Transaction History");
 		menuBar.add(viewMenu);
 		
@@ -557,7 +554,7 @@ public class ZOutGUI {
 	static ArrayList<Transaction> getTransactionList(){
 		return transactionList;
 	}
-	static void deleteTransaction(Transaction index){
+	static void deleteTransaction(int index){
 		transactionList.remove(index);
 		saveStatic();
 	}
@@ -1780,7 +1777,7 @@ public class ZOutGUI {
 	 */
 	private class DeleteTransactionMenuItemActionListener implements ActionListener {
 		public void actionPerformed(ActionEvent arg0) {
-			new DeleteTransactionWindow();			
+			new DeleteTransactionWindow();		
 		}
 	}
 }
