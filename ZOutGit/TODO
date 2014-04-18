@@ -1,10 +1,1 @@
-Add jdialog that pops up if there is data in the credit card or check entries, (preventing the chance user didnt realize 
-they have to hit enter to add a credit card or check)
-
-Warning: credit card / checks have not been added yet, do you still want to proceed?
-
-add arraylist of transactions that loads all current transactions in the History.zof file on program startup. if there are no transactions to load, then it doesnt matter
-if there are tranasctions to load then this arraylist will be used by the viewtransactionhistorywindow to display
-the transactions to the user. 
-
-this will allow me to then allow the user to delete a transaction if they had made a mistake.
+Nothing to do
