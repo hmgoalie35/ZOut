@@ -28,9 +28,13 @@ public class DeleteTransactionWindow {
 	 * transaction history window a few times in a row.
 	 */
 	public DeleteTransactionWindow() {	
+		//display the view transaction window if it is not already open
+		//to allow for the user to more easily choose the transaction
+		//they would like to delete
 		if(!ViewTransactionHistoryWindow.isFrameCreated()){
 			new ViewTransactionHistoryWindow();
 		}
+		//if this window is already created, close it and create a new window
 		if (isFrameCreated) {
 			frame.dispose();
 			isFrameCreated = false;
@@ -46,7 +50,8 @@ public class DeleteTransactionWindow {
 		frame.addWindowListener(new frameWindowListener());
 		frame.setResizable(false);
 		frame.getContentPane().setLayout(null);
-
+		//add all the transactions from the ZOutGUI's transaction list to the list that is
+		//to be used to populate the JList
 		transList = new String[ZOutGUI.getTransactionList().size()];
 		int i = 0;
 		for (Transaction t : ZOutGUI.getTransactionList()) {
@@ -101,7 +106,13 @@ public class DeleteTransactionWindow {
 			closeDeleteTransactionWindow();
 		}
 	}
-
+	
+	/**
+	 * Listener that is activated whenever the selection of the JList has been changed.
+	 * When a specific transaction in the list is selected, and upon confirmation, the 
+	 * desired transaction is deleted.
+	 * @author Harris
+	 */
 	private class listListener implements ListSelectionListener {
 
 		@Override
@@ -119,6 +130,7 @@ public class DeleteTransactionWindow {
 				ZOutGUI.deleteTransaction(jList.getSelectedIndex());
 				JOptionPane.showMessageDialog(frame, "      Deletion Successful", "Success", JOptionPane.INFORMATION_MESSAGE);
 				frame.dispose();
+				//if the ViewTransactionHistoryWindow was open, then refresh the window. 
 				if(ViewTransactionHistoryWindow.isFrameCreated()){
 					ViewTransactionHistoryWindow.closeTransHistoryWindow();
 					new ViewTransactionHistoryWindow();
