@@ -6,13 +6,6 @@ Coded on - Lenovo T520, Windows 7 64 bit, Eclipse Kepler Java 1.7
 
 ~~Any bugs, inquiries or suggestions can be emailed to harris@pittinsky.com
 
-The source code is included in the .jar. Just open the .jar with an unarchiver. Go to the zOut folder
-and the source code is the files ending with .java
-
-The javadocs can be viewed by navigating to the JavaDocs folder when the .jar is unzipped and double 
-clicking index.html. From here documentation about the code can be accessed by selecting
-the appropriate class.
-
 ~~ When actually doing the z-out, turn the key to the z and hit the cash out button (bottom right). 
 ~~ Count the number of each bills/coins and enter them into this program. 
 ~~ You still have to fill out the sheet with the corresponding amount of bills/coins and how many 
@@ -20,14 +13,11 @@ adult residents, skate rentals, etc. there were for the day
 ~~ Also need to put the money in an envelop, with the date, time, your name, total money amount 
 on the outside.
 
-~~ The program also handles checks and credit cards, enter the check amount in the entry box and 
-hit the <Enter> key , this will add up all of the checks and then display the total.
+~~ The program also handles checks and credit cards, enter the check or credit card amount in the entry box and 
+hit the <Enter> key , this will add up all of the checks and credit cards and then display the total.
 
-~~ The same method will be used for credit card transactions. Simply type the credit card amount 
-in the entry box and hit the <Enter> key. 
-
-~~ The program also displays how many credit cards and checks have been added in the rightmost column.
- This is a running total and as checks or credit cards are added they are added. whenever the user
+~~ The program displays how many credit cards and checks have been added in the rightmost column.
+ This is a running total and as checks or credit cards are added they are added. Whenever the user
   deletes a credit card or check this number decreases by one. 
 
 ====================================================================================
@@ -103,22 +93,12 @@ under the Amount label.
 ~~ A subtotal is automatically accumulated when the user enters, or  
 deletes numbers. 
 
-***** If there are none of a certain bill/coin you DO NOT need to put a 0 in 
-                      the entry box, just leave it blank****
+***** If there are none of a certain bill/coin you DO NOT need to put a 0 in the entry box, just leave it blank****
 
 ====================================================================================
 
-
-~~the calculate the total button is always enabled. the user can press it at any time
-if for some reason the calculation returns a negative number the program displays a dialog 
-to the user asking them if they are sure they entered the correct data, if yes then the total 
-is updated and the corresponding information is written to the History.zof file.
-if no then the program returns back to it's main screen so the user can input the correct 
-data. No information is written to the History.zof file in this case.  
-
-====================================================================================
 ~~Reset Fields button -- this button resets all of the fields, including the credit cards 
-and checks that have been added.
+and checks that have been added. it does not reset the Register Amount. 
 ====================================================================================
 
 **File Menu**
@@ -133,7 +113,9 @@ all fields. keyboard shortcut - Ctrl + r
 **Edit Menu**
 
 the below menu items are disabled until a check or credit card is added. 
-they are also disabled when all checks or credit cards have been removed
+they are also disabled when all checks or credit cards have been removed. As long as there are
+transactions being loaded from the file, the Delete a Transaction menu item is enabled, otherwise
+it is disabled. 
 
 ~~Delete a Credit Card -- allows the user to remove any of the credit card values they added. 
 they simply input one of the values in the dialog box and if it exists, it is then removed and the
@@ -145,6 +127,11 @@ input one of the values in the dialog box and if it exists, it is then removed a
 corresponding fields are updated. the current list of check values that have been added
 are displayed in the dialog box
 
+~~Delete a Transaction -- allows the user to delete a transaction. The user chooses from a list 
+of transactions (denoted by the date and time they were created) and upon selection of one, is prompted
+to confirm they want to actually delete that transaction. If they click yes, the transaction is deleted,
+otherwise they are brought back to the delete transaction window. 
+
 
 **Transaction History**
 
@@ -155,7 +142,7 @@ stored in the History.zof file. keyboard shortcut - Ctrl + t.
 	
 ~~Delete Transaction History -- this resets the History.zof file to have nothing in 
 it among confirmation from the user. Actually deleting the file would cause 
-errors when the program is running, so creating a new clean file of the same name does 
+errors when the program is running, so creating a new clean file with the same name does 
 the same trick. 
 
 
