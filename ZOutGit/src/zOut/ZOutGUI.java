@@ -23,7 +23,6 @@ import java.io.ObjectOutputStream;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Properties;
 
@@ -86,9 +85,7 @@ public class ZOutGUI {
 	private JScrollPane scrollPane;
 	// Misc.
 	private NumberFormat moneyFormat = NumberFormat.getCurrencyInstance();
-	private ArrayList<Double> checkList, creditCardList; // list appended to
-															// whenever cc or
-															// check is added.
+	private ArrayList<Double> checkList, creditCardList; // list appended to whenever cc or check is added.
 	private static ArrayList<Transaction> transactionList = new ArrayList<>();
 	private double dollarVar = 0, twoVar = 0, fiveVar = 0, tenVar = 0,
 			twentyVar = 0, fiftyVar = 0, hundredVar = 0, pennyVar = 0,
@@ -128,16 +125,13 @@ public class ZOutGUI {
 		timer = new Timer(2, new TimerListener());
 		// Create folder/files if aren't already created.
 		dir = new File("History"); // creates folder with this name.
-		file = new File(dir, "History.zof");// creates file in the above folder
-											// with the name History.zof
+		file = new File(dir, "History.zof");// creates file in the above folder with the name History.zof
 		fileStatic = new File(dir, "History.zof");
-		File propertyFile = new File(dir, "properties.txt");// creates the
-															// properties.txt
-															// file in the
-															// folder specified
-															// above.
+		File propertyFile = new File(dir, "properties.txt");// creates the properties.txt file in the folder specified above.
 		properties = new Properties();
-
+		/*
+		 * create the History folder and its contents if they do not exist
+		 */
 		try {
 			if (!dir.exists()) {
 				dir.mkdir();
@@ -254,6 +248,7 @@ public class ZOutGUI {
 		deleteTransactionMenuItem.setEnabled(false);
 		deleteTransactionMenuItem
 				.addActionListener(new DeleteTransactionMenuItemActionListener());
+		//enable the delete transaction menu item if there are transactions in the transaction list, otherwise keep it disabled.
 		if (transactionList.size() > 0) {
 			deleteTransactionMenuItem.setEnabled(true);
 		}
@@ -508,8 +503,7 @@ public class ZOutGUI {
 		calculateBtn.setBounds(46, 469, 108, 23);
 		mainWindow.getContentPane().add(calculateBtn);
 
-		okButton = new JButton("Ok"); // becomes visible after the modify button
-										// is pressed.
+		okButton = new JButton("Ok"); // becomes visible after the modify button is pressed.
 		okButton.addActionListener(new OkButtonActionListener());
 		okButton.setVisible(false);
 		okButton.setEnabled(false);
@@ -545,9 +539,7 @@ public class ZOutGUI {
 	 * 10. ex: "1", "3", are valid while "a", "~" are invalid. any floating
 	 * point number like "5.5" is also invalid. the canBeDouble method is used
 	 * to test for floating point numbers (decimal numbers)
-	 * 
-	 * @param str
-	 *            the string to check and determine if it is a valid integer
+	 * @param str the string to check and determine if it is a valid integer
 	 * @return true if the string can be an integer, false if it cannot.
 	 */
 	public boolean canBeInt(String str) {
@@ -565,9 +557,7 @@ public class ZOutGUI {
 	 * checks to see if the str parameter can be parsed to a double of base 10.
 	 * ex: "5.5", "1.5", "3" are valid while "@", "f" are invalid. Note--
 	 * integer values do work
-	 * 
-	 * @param str
-	 *            the string to check and determine if it is a valid double
+	 * @param str the string to check and determine if it is a valid double
 	 * @return true if the string can be a double, false if it cannot.
 	 */
 	public boolean canBeDouble(String str) {
@@ -600,23 +590,20 @@ public class ZOutGUI {
 	}
 
 	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		new ZOutGUI();
-	}
-
-	/**
 	 * Allows the others classes in this package to access the transactionList.
 	 * This is so the other classes can read what objects are in the
 	 * transactionList.
-	 * 
 	 * @return transactionList
 	 */
 	static ArrayList<Transaction> getTransactionList() {
 		return transactionList;
 	}
 
+	/**
+	 * Deletes a transaction from the transactionList and then saves the list to file. 
+	 * Utilized by the DeleteTransactionWindow class.
+	 * @param index the index to delete the transaction from.
+	 */
 	static void deleteTransaction(int index) {
 		transactionList.remove(index);
 		saveStatic();
@@ -728,7 +715,6 @@ public class ZOutGUI {
 	 * on which entry is being edited. the five entry with 2 in it will display
 	 * $10. if the user entered value is invalid a dialog box warning the user
 	 * is presented.
-	 * 
 	 * @author Harris Pittinsky
 	 */
 	private class OneEntryKeyListener extends KeyAdapter {
@@ -1618,7 +1604,7 @@ public class ZOutGUI {
 				SimpleDateFormat dateFormat = new SimpleDateFormat(
 						"EEEE MM-dd-yyyy hh:mm:ssa");
 				String date = dateFormat.format(cal.getTime());
-				Transaction transaction = new Transaction(cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.YEAR), date, checkList.size(), checkVar, creditCardList.size(), creditVar, dollarVar + twoVar + fiveVar+ tenVar + twentyVar + fiftyVar + hundredVar	+ pennyVar + nickelVar + dimeVar + quarterVar, Double.parseDouble(modifyEntry.getText()), moneyAmount, total);
+				Transaction transaction = new Transaction(date, checkList.size(), checkVar, creditCardList.size(), creditVar, dollarVar + twoVar + fiveVar+ tenVar + twentyVar + fiftyVar + hundredVar	+ pennyVar + nickelVar + dimeVar + quarterVar, Double.parseDouble(modifyEntry.getText()), moneyAmount, total);
 				transactionList.add(transaction);
 				deleteTransactionMenuItem.setEnabled(true);
 				save();
@@ -1636,7 +1622,7 @@ public class ZOutGUI {
 					GregorianCalendar cal = new GregorianCalendar();
 					SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE MM-dd-yyyy hh:mm:ssa");
 					String date = dateFormat.format(cal.getTime());
-					Transaction transaction = new Transaction(cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.YEAR), date, checkList.size(), checkVar, creditCardList.size(), creditVar, dollarVar + twoVar + fiveVar+ tenVar + twentyVar + fiftyVar + hundredVar	+ pennyVar + nickelVar + dimeVar + quarterVar, Double.parseDouble(modifyEntry.getText()), moneyAmount, total);
+					Transaction transaction = new Transaction(date, checkList.size(), checkVar, creditCardList.size(), creditVar, dollarVar + twoVar + fiveVar+ tenVar + twentyVar + fiftyVar + hundredVar	+ pennyVar + nickelVar + dimeVar + quarterVar, Double.parseDouble(modifyEntry.getText()), moneyAmount, total);
 					transactionList.add(transaction);
 					deleteTransactionMenuItem.setEnabled(true);
 					save();
@@ -1646,6 +1632,7 @@ public class ZOutGUI {
 					total = 0;
 				}
 			}
+			//refreshes the ViewTransactionHistoryWindow to show the newly added transactions
 			if(ViewTransactionHistoryWindow.isFrameCreated()){
 				ViewTransactionHistoryWindow.closeTransHistoryWindow();
 				new ViewTransactionHistoryWindow();
@@ -2107,5 +2094,12 @@ public class ZOutGUI {
 		public void actionPerformed(ActionEvent arg0) {
 			new DeleteTransactionWindow();
 		}
+	}
+	
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		new ZOutGUI();
 	}
 }
