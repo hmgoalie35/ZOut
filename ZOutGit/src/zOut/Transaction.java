@@ -6,19 +6,16 @@ import java.text.NumberFormat;
 public class Transaction implements Serializable {
 
 	private static final long serialVersionUID = 7423120658539374238L;
-	private int numChecks, numCards, month, day, year;
+	private int numChecks, numCards;
 	private String date;
 	double checkSubTotal, cardSubTotal, cashSubTotal, registerStartingAmt,
 			subTotal, total;
 	private NumberFormat moneyFormat = NumberFormat.getCurrencyInstance();
 
-	public Transaction(int aMonth, int aDay, int aYear, String aDate,
+	public Transaction(String aDate,
 			int numberChecks, double aCheckSubTotal, int numberCards,
 			double aCardSubTotal, double aCashSubTotal,
 			double registerStartingAmount, double aSubTotal, double theTotal) {
-		this.month = aMonth;
-		this.day = aDay;
-		this.year = aYear;
 		this.date = aDate;
 		this.numChecks = numberChecks;
 		this.checkSubTotal = aCheckSubTotal;
@@ -46,14 +43,19 @@ public class Transaction implements Serializable {
 	public double getTotal() {
 		return total;
 	}
-
-	public String getMonthDayYear() {
-		return month + "-" + day + "-" + year;
-	}
-
+	
+	/**
+	 * The transaction variables are only formatted to have commas and dollar signs in the toString.
+	 * Format the values and return the concatenated string.
+	 */
 	@Override
 	public String toString() {
 		String calculatedTotal = null;
+		/*
+		 * when invoking .format on a negative number formatting utilizes () to signify a negative number.
+		 * what is being done below is removing the () and adding a - sign to signify negative, as well as
+		 * add the $ sign. if the number was positive then just normally format it. 
+		 */
 		if(total < 0){
 			String data = moneyFormat.format(total);
 			data = data.substring(2, data.length() - 1);
