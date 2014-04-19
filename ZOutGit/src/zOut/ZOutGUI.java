@@ -244,6 +244,7 @@ public class ZOutGUI {
 				.addActionListener(new DeleteCheckMenuItemActionListener());
 		editMenu.add(deleteCheckMenuItem);
 
+		editMenu.addSeparator();
 		deleteTransactionMenuItem = new JMenuItem("Delete a Transaction");
 		deleteTransactionMenuItem.setEnabled(false);
 		deleteTransactionMenuItem
@@ -260,10 +261,10 @@ public class ZOutGUI {
 		viewHistoryMenuItem = new JMenuItem("View Transaction History");
 		viewHistoryMenuItem
 				.addActionListener(new ViewHistoryMenuItemActionListener());
-		viewMenu.add(viewHistoryMenuItem);
 		viewHistoryMenuItem.setAccelerator(KeyStroke.getKeyStroke(
 				KeyEvent.VK_T, InputEvent.CTRL_MASK));
-
+		viewMenu.add(viewHistoryMenuItem);
+		viewMenu.addSeparator();
 		deleteHistoryMenuItem = new JMenuItem("Delete Transaction History");
 		deleteHistoryMenuItem
 				.addActionListener(new DeleteHistoryMenuItemActionListener());
