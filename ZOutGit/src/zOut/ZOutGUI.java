@@ -1833,7 +1833,7 @@ public class ZOutGUI {
 				int j = JOptionPane.showConfirmDialog(mainWindow,
 						"Are You Sure, This CANNOT Be Undone", "Confirmation",
 						JOptionPane.YES_NO_OPTION);
-				if (j == JOptionPane.YES_OPTION) {					
+				if (j == JOptionPane.YES_OPTION) {
 					if (file.exists()) {
 						transactionList.clear();
 						deleteTransactionMenuItem.setEnabled(false);
@@ -1845,7 +1845,7 @@ public class ZOutGUI {
 										"         History.zof Reset",
 										"Reset Successful",
 										JOptionPane.INFORMATION_MESSAGE);
-								//refreshes the ViewTransactionHistoryWindow to show the newly added transactions
+								//refreshes the ViewTransactionHistoryWindow    show the newly added transactions
 								if(ViewTransactionHistoryWindow.isFrameCreated()){
 									ViewTransactionHistoryWindow.closeTransHistoryWindow();
 									new ViewTransactionHistoryWindow();
