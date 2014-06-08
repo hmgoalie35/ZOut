@@ -68,7 +68,7 @@ public class ZOutGUI {
 	private JMenu fileMenu, editMenu, viewMenu;
 	private JMenuItem restartMenuItem, viewHistoryMenuItem, helpMenuItem,
 			deleteHistoryMenuItem, quitMenuItem, deleteCreditMenuItem,
-			deleteCheckMenuItem, deleteTransactionMenuItem;
+			deleteCheckMenuItem, deleteTransactionMenuItem, clearAllCreditMenuItem, clearAllCheckMenuItem;
 	private JTextField oneEntry, twoEntry, fiveEntry, tenEntry, twentyEntry,
 			fiftyEntry, hundredEntry, creditEntry, checkEntry, pennyEntry,
 			nickelEntry, dimeEntry, quarterEntry, modifyEntry;
@@ -231,20 +231,19 @@ public class ZOutGUI {
 
 		editMenu = new JMenu("Edit");
 		menuBar.add(editMenu);
-
-		deleteCreditMenuItem = new JMenuItem("Delete a Credit Card");
-		deleteCreditMenuItem
-				.addActionListener(new DeleteCreditMenuItemActionListener());
-		editMenu.add(deleteCreditMenuItem);
-		deleteCreditMenuItem.setEnabled(false);
-
+		
 		deleteCheckMenuItem = new JMenuItem("Delete a Check");
 		deleteCheckMenuItem.setEnabled(false);
 		deleteCheckMenuItem
 				.addActionListener(new DeleteCheckMenuItemActionListener());
 		editMenu.add(deleteCheckMenuItem);
 
-		editMenu.addSeparator();
+		deleteCreditMenuItem = new JMenuItem("Delete a Credit Card");
+		deleteCreditMenuItem
+				.addActionListener(new DeleteCreditMenuItemActionListener());
+		editMenu.add(deleteCreditMenuItem);
+		deleteCreditMenuItem.setEnabled(false);
+		
 		deleteTransactionMenuItem = new JMenuItem("Delete a Transaction");
 		deleteTransactionMenuItem.setEnabled(false);
 		deleteTransactionMenuItem
@@ -254,7 +253,19 @@ public class ZOutGUI {
 			deleteTransactionMenuItem.setEnabled(true);
 		}
 		editMenu.add(deleteTransactionMenuItem);
-
+		
+		editMenu.addSeparator();
+//-----------------------------------------------------------------		
+		clearAllCheckMenuItem = new JMenuItem("Clear All Checks");
+		clearAllCheckMenuItem.setEnabled(false);	
+		clearAllCheckMenuItem.addActionListener(new ClearAllCheckActionListener());
+		editMenu.add(clearAllCheckMenuItem);
+				
+		clearAllCreditMenuItem = new JMenuItem("Clear All Credit Cards");
+		clearAllCreditMenuItem.setEnabled(false);
+		clearAllCreditMenuItem.addActionListener(new ClearAllCreditActionListener());
+		editMenu.add(clearAllCreditMenuItem);
+		
 		viewMenu = new JMenu("Transaction History");
 		menuBar.add(viewMenu);
 
@@ -1362,6 +1373,7 @@ public class ZOutGUI {
 						+ " Credit Card(s)");
 				creditEntry.setText(null);
 				deleteCreditMenuItem.setEnabled(true);
+				clearAllCreditMenuItem.setEnabled(true);
 			} else {
 				JOptionPane.showMessageDialog(mainWindow,
 						"Please Enter a Valid Number", "Invalid Entry",
@@ -1401,6 +1413,7 @@ public class ZOutGUI {
 				checkCountLabel.setText(checkList.size() + " Check(s)");
 				checkEntry.setText(null);
 				deleteCheckMenuItem.setEnabled(true);
+				clearAllCheckMenuItem.setEnabled(true);
 			} else {
 				JOptionPane.showMessageDialog(mainWindow,
 						"Please Enter a Valid Number", "Invalid Entry",
@@ -1918,6 +1931,7 @@ public class ZOutGUI {
 						total = 0;
 						if (creditCardList.size() == 0) {
 							deleteCreditMenuItem.setEnabled(false);
+							clearAllCreditMenuItem.setEnabled(false);
 						}
 					} else {
 						JOptionPane.showMessageDialog(mainWindow,
@@ -1972,6 +1986,7 @@ public class ZOutGUI {
 						total = 0;
 						if (checkList.size() == 0) {
 							deleteCheckMenuItem.setEnabled(false);
+							clearAllCheckMenuItem.setEnabled(false);
 						}
 					} else {
 						JOptionPane.showMessageDialog(mainWindow,
@@ -2094,6 +2109,47 @@ public class ZOutGUI {
 			ActionListener {
 		public void actionPerformed(ActionEvent arg0) {
 			new DeleteTransactionWindow();
+		}
+	}
+	
+	private class ClearAllCheckActionListener implements ActionListener{
+		public void actionPerformed(ActionEvent arg){
+			int result = JOptionPane.showConfirmDialog(mainWindow, "Do You Really Want to Clear All Check Entries?", "Are You Sure?", JOptionPane.YES_NO_OPTION);
+			if(result == JOptionPane.YES_OPTION){
+			checkList.clear();
+			checkVar = 0;
+			checkCountLabel.setText(checkList.size() + " Check(s)");
+			checkAmtLabel.setText(moneyFormat.format(checkVar));
+			calculateSubTotal();
+			totalVar.setText(moneyFormat.format(0));
+			total = 0;
+			calculateBtn.setEnabled(true);
+			progressBar.setString("Calculating...");
+			progressBar.setValue(0);
+			progressBar.setStringPainted(false);
+			clearAllCheckMenuItem.setEnabled(false);
+			}
+		}
+	}
+	
+	private class ClearAllCreditActionListener implements ActionListener{
+		public void actionPerformed(ActionEvent arg){
+			int result = JOptionPane.showConfirmDialog(mainWindow, "Do You Really Want to Clear All Credit Card Entries?", "Are You Sure?", JOptionPane.YES_NO_OPTION);
+			if(result == JOptionPane.YES_OPTION){
+			creditCardList.clear();
+			creditVar = 0;
+			creditCountLabel.setText(creditCardList.size()
+					+ " Credit Card(s)");
+			creditAmtLabel.setText(moneyFormat.format(creditVar));
+			calculateSubTotal();
+			totalVar.setText(moneyFormat.format(0));
+			total = 0;	
+			calculateBtn.setEnabled(true);
+			progressBar.setString("Calculating...");
+			progressBar.setValue(0);
+			progressBar.setStringPainted(false);
+			clearAllCreditMenuItem.setEnabled(false);
+			}
 		}
 	}
 	
